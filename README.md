@@ -34,7 +34,7 @@ This project is implemented with vanilla JavaScript, CSS, and HTML—no build st
 
 ## Development notes
 
-- Spaced repetition is based on a simplified SM-2 algorithm with minute-level intervals for quicker short-term reinforcement.
+- Spaced repetition is  based on a simplified SM-2 algorithm with minute-level intervals for quicker short-term reinforcement.
 - Pronunciation relies on the browser’s Web Speech API (`speechSynthesis`). On platforms without that API the app gracefully skips audio.
 - Speaking checks use the Web Speech Recognition API (`SpeechRecognition`). If the API or microphone permissions aren’t available the UI falls back with guidance.
 - Synth celebration/error tones are generated with the Web Audio API.
