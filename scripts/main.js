@@ -428,12 +428,16 @@ function renderLevelTwo(word) {
 }
 
 function renderLevelThree(word) {
+  return (
+    `<div class="prompt">
   return `
     <div class="prompt">
       <p class="prompt-text">${word.english}</p>
       <div class="input-area">
         <input type="text" id="typed-answer" placeholder="Type the Spanish" autocomplete="off" />
       </div>
+    </div>`
+  );
     </div>
   `;
 }
