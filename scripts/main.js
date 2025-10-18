@@ -362,6 +362,10 @@ function renderSessionCard() {
       ${bodyContent}
       <div class="feedback-message" id="session-feedback"></div>
       <div class="session-actions" id="session-actions"></div>
+      <div class="speech-eval" id="speech-eval"></div>
+      ${bodyContent}
+      <div class="feedback-message" id="session-feedback"></div>
+      <div class="session-actions" id="session-actions"></div>
       <button class="session-close" aria-label="Close session">✕</button>
     </div>
   `;
@@ -403,6 +407,21 @@ function renderLevelTwo(word) {
         </div>
         <button class="button-danger" id="scramble-reset">Reset</button>
         ${mode === "phrase" ? '<p class="scramble-hint">Tap the words in order to rebuild the sentence.</p>' : ""}
+  const letters = shuffleArray(word.spanish.split(""));
+  return `
+    <div class="prompt">
+      <p class="prompt-text">${word.english}</p>
+      <div class="scramble-area" data-target="${word.spanish}">
+        <div class="scramble-output" id="scramble-output"></div>
+        <div class="scramble-letters">
+          ${letters
+            .map((letter, index) => {
+              const display = letter === " " ? "␣" : letter;
+              return `<button data-letter="${letter}" data-index="${index}">${display}</button>`;
+            })
+            .join("")}
+        </div>
+        <button class="button-danger" id="scramble-reset">Reset</button>
       </div>
     </div>
   `;
@@ -411,12 +430,16 @@ function renderLevelTwo(word) {
 function renderLevelThree(word) {
   return (
     `<div class="prompt">
+  return `
+    <div class="prompt">
       <p class="prompt-text">${word.english}</p>
       <div class="input-area">
         <input type="text" id="typed-answer" placeholder="Type the Spanish" autocomplete="off" />
       </div>
     </div>`
   );
+    </div>
+  `;
 }
 
 function setupSessionActions(word) {
@@ -464,6 +487,13 @@ function setupSessionActions(word) {
           selection.push(unit === " " ? " " : unit);
           output.textContent = selection.join("");
         }
+
+    buttons.forEach((btn, index) => {
+      btn.addEventListener("click", () => {
+        if (used.has(index)) return;
+        used.add(index);
+        const letter = btn.dataset.letter === " " ? " " : btn.dataset.letter;
+        output.textContent += letter;
         btn.disabled = true;
       });
     });
@@ -490,6 +520,12 @@ function setupSessionActions(word) {
         return;
       }
       const result = evaluateAnswer(word.spanish, attempt);
+      const attempt = output.textContent.trim();
+      const result = evaluateAnswer(word.spanish, attempt);
+      if (!attempt) {
+        feedback.textContent = "Assemble the word first.";
+        return;
+      }
       handleSessionResult(word, result.correct, result.correct ? "Perfect!" : "Let's try that again.", {
         attempt,
         result
@@ -545,6 +581,7 @@ function setupSessionActions(word) {
     });
   }
 
+  setupSpeechTest(word);
 }
 
 function handleSessionResult(word, isCorrect, message, extras = {}) {
@@ -607,6 +644,153 @@ function handleSessionResult(word, isCorrect, message, extras = {}) {
   session.feedbackTimeout = setTimeout(() => {
     renderSessionCard();
   }, isCorrect ? 1200 : 900);
+}
+
+function setupSpeechTest(word) {
+  const speechContainer = elements.sessionLayer.querySelector("#speech-eval");
+  if (!speechContainer) return;
+
+  const phraseMode = isPhrase(word);
+
+  const resetState = () => {
+    speechContainer.classList.remove("speech-success", "speech-warning", "speech-error");
+  };
+
+  speechContainer.innerHTML = "";
+
+  if (!isSpeechSupported()) {
+    const status = document.createElement("p");
+    status.className = "speech-status muted";
+    status.textContent = "Speech recognition is not available on this device.";
+    speechContainer.appendChild(status);
+    return;
+  }
+
+  const button = document.createElement("button");
+  button.type = "button";
+  button.textContent = "🎙️ Pronunciation check";
+
+  const status = document.createElement("p");
+  status.className = "speech-status muted";
+  status.textContent = phraseMode
+    ? "Tap to check how your sentence sounds."
+    : "Tap to compare your pronunciation.";
+
+  const transcriptsList = document.createElement("ul");
+  transcriptsList.className = "speech-transcripts";
+  transcriptsList.hidden = true;
+
+  const resetState = () => {
+    speechContainer.classList.remove("speech-success", "speech-warning", "speech-error");
+    transcriptsList.innerHTML = "";
+    transcriptsList.hidden = true;
+  };
+
+  const showTranscripts = (entries = []) => {
+    transcriptsList.innerHTML = "";
+    if (!entries.length) {
+      transcriptsList.hidden = true;
+      return;
+    }
+    transcriptsList.hidden = false;
+    entries.forEach((item) => {
+      const li = document.createElement("li");
+      if (item.result?.correct) {
+        li.classList.add("match-correct");
+      } else if (item.result?.almost) {
+        li.classList.add("match-almost");
+      } else {
+        li.classList.add("match-miss");
+      }
+      const transcriptLine = document.createElement("span");
+      transcriptLine.className = "transcript";
+      transcriptLine.textContent = item.text;
+      li.appendChild(transcriptLine);
+
+      if (Number.isFinite(item.confidence)) {
+        const confidence = Math.round(item.confidence * 100);
+        const confidenceLine = document.createElement("span");
+        confidenceLine.className = "confidence";
+        confidenceLine.textContent = `Confidence ${confidence}%`;
+        li.appendChild(confidenceLine);
+      }
+
+      transcriptsList.appendChild(li);
+    });
+  };
+
+  speechContainer.append(button, status, transcriptsList);
+  speechContainer.append(button, status);
+
+  button.addEventListener("click", async () => {
+    resetState();
+    button.disabled = true;
+    status.classList.remove("muted");
+    status.textContent = phraseMode
+      ? "Listening… say the full sentence in Spanish now."
+      : "Listening… say it in Spanish now.";
+    try {
+      const { transcripts } = await listenForSpanish();
+      if (!transcripts || !transcripts.length) {
+        speechContainer.classList.add("speech-warning");
+        status.textContent = "I couldn't hear that. Try again.";
+        showTranscripts([]);
+        return;
+      }
+
+      const scored = transcripts.map((entry) => ({
+        text: entry.transcript,
+        confidence: entry.confidence,
+        result: evaluateAnswer(word.spanish, entry.transcript)
+      }));
+
+      showTranscripts(scored);
+
+      const perfect = scored.find((item) => item.result.correct);
+      if (perfect) {
+        speechContainer.classList.add("speech-success");
+        status.textContent = phraseMode
+          ? `Great pronunciation! I heard “${perfect.text}”.`
+          : `Great pronunciation! I heard “${perfect.text}”.`;
+        return;
+      }
+
+      const almost = scored.find((item) => item.result.almost);
+      if (almost) {
+        speechContainer.classList.add("speech-warning");
+        status.textContent = phraseMode
+          ? `Almost there! I heard “${almost.text}”. Smooth it out.`
+          : `Almost! I heard “${almost.text}”. Check the sounds.`;
+        return;
+      }
+
+      const heard = scored[0]?.text;
+      speechContainer.classList.add("speech-error");
+      if (heard) {
+        status.textContent = phraseMode
+          ? `I heard “${heard}”. Let's try the full sentence again.`
+          : `I heard “${heard}”. Let's try again for ${word.spanish}.`;
+      } else {
+        status.textContent = "Let's try that again—no match this time.";
+      }
+    } catch (error) {
+      speechContainer.classList.add("speech-error");
+      showTranscripts([]);
+      if (error.code === "not-allowed" || error.code === "service-not-allowed") {
+        status.textContent = "Allow microphone access to try the speaking test.";
+      } else if (error.code === "no-speech") {
+        status.textContent = "I didn't catch anything. Try again.";
+      } else if (error.code === "aborted") {
+        status.textContent = "Listening cancelled. Give it another go.";
+      } else if (error.message === "unsupported") {
+        status.textContent = "Speech recognition is not supported in this browser.";
+      } else {
+        status.textContent = "Something interrupted the speech test. Try again.";
+      }
+    } finally {
+      button.disabled = false;
+    }
+  });
 }
 
 function showModalMessage(title, message) {

@@ -5,6 +5,7 @@ Spanish Ace is a futuristic heads-up-display style web app that helps Magnus (an
 ## Features
 
 - ✅ **Curriculum aligned topics** that match the supplied vocab sheet (ages & numbers, months, pets, descriptions, colours, high-frequency words, family sets, and full phrases).
+- ✅ **Curriculum aligned topics** that match the supplied vocab sheet (ages & numbers, months, pets, descriptions, colours, high-frequency words, and more).
 - ✅ **Three training levels**
   - *Level 1 – Acquire:* See and hear the Spanish straight away while deciding if it is locked in.
   - *Level 2 – Assemble:* Build the answer from scrambled Spanish letters.
@@ -34,8 +35,10 @@ This project is implemented with vanilla JavaScript, CSS, and HTML—no build st
 ## Development notes
 
 - Spaced repetition is based on a simplified SM-2 algorithm with minute-level intervals for quicker short-term reinforcement.
+- Spaced repetition is  based on a simplified SM-2 algorithm with minute-level intervals for quicker short-term reinforcement.
 - Pronunciation relies on the browser’s Web Speech API (`speechSynthesis`). On platforms without that API the app gracefully skips audio.
 - Speaking checks use the Web Speech Recognition API (`SpeechRecognition`). If the API or microphone permissions aren’t available the UI falls back with guidance.
 - Synth celebration/error tones are generated with the Web Audio API.
 
 Enjoy the mission! 🚀
+<!-- Updated: 18 Oct 2025 -->
