@@ -40,3 +40,4 @@ This project is implemented with vanilla JavaScript, CSS, and HTML—no build st
 - Synth celebration/error tones are generated with the Web Audio API.
 
 Enjoy the mission! 🚀
+<!-- Updated: 18 Oct 2025 -->
