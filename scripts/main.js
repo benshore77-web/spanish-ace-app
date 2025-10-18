@@ -672,6 +672,50 @@ function setupSpeechTest(word) {
     ? "Tap to check how your sentence sounds."
     : "Tap to compare your pronunciation.";
 
+  const transcriptsList = document.createElement("ul");
+  transcriptsList.className = "speech-transcripts";
+  transcriptsList.hidden = true;
+
+  const resetState = () => {
+    speechContainer.classList.remove("speech-success", "speech-warning", "speech-error");
+    transcriptsList.innerHTML = "";
+    transcriptsList.hidden = true;
+  };
+
+  const showTranscripts = (entries = []) => {
+    transcriptsList.innerHTML = "";
+    if (!entries.length) {
+      transcriptsList.hidden = true;
+      return;
+    }
+    transcriptsList.hidden = false;
+    entries.forEach((item) => {
+      const li = document.createElement("li");
+      if (item.result?.correct) {
+        li.classList.add("match-correct");
+      } else if (item.result?.almost) {
+        li.classList.add("match-almost");
+      } else {
+        li.classList.add("match-miss");
+      }
+      const transcriptLine = document.createElement("span");
+      transcriptLine.className = "transcript";
+      transcriptLine.textContent = item.text;
+      li.appendChild(transcriptLine);
+
+      if (Number.isFinite(item.confidence)) {
+        const confidence = Math.round(item.confidence * 100);
+        const confidenceLine = document.createElement("span");
+        confidenceLine.className = "confidence";
+        confidenceLine.textContent = `Confidence ${confidence}%`;
+        li.appendChild(confidenceLine);
+      }
+
+      transcriptsList.appendChild(li);
+    });
+  };
+
+  speechContainer.append(button, status, transcriptsList);
   speechContainer.append(button, status);
 
   button.addEventListener("click", async () => {
@@ -686,6 +730,7 @@ function setupSpeechTest(word) {
       if (!transcripts || !transcripts.length) {
         speechContainer.classList.add("speech-warning");
         status.textContent = "I couldn't hear that. Try again.";
+        showTranscripts([]);
         return;
       }
 
@@ -694,6 +739,8 @@ function setupSpeechTest(word) {
         confidence: entry.confidence,
         result: evaluateAnswer(word.spanish, entry.transcript)
       }));
+
+      showTranscripts(scored);
 
       const perfect = scored.find((item) => item.result.correct);
       if (perfect) {
@@ -724,6 +771,7 @@ function setupSpeechTest(word) {
       }
     } catch (error) {
       speechContainer.classList.add("speech-error");
+      showTranscripts([]);
       if (error.code === "not-allowed" || error.code === "service-not-allowed") {
         status.textContent = "Allow microphone access to try the speaking test.";
       } else if (error.code === "no-speech") {
