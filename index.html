@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Spanish Ace - Magnus' Vocab Trainer</title>
+    <link rel="stylesheet" href="styles.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700&family=Source+Sans+3:wght@300;400;600&display=swap"
+      rel="stylesheet"
+    />
+    <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js" defer></script>
+    <script type="module" src="scripts/main.js" defer></script>
+  </head>
+  <body>
+    <div class="hud-overlay"></div>
+    <header class="app-header">
+      <div>
+        <h1>Spanish Ace</h1>
+        <p class="tagline">Magnus' mission control for Spanish mastery</p>
+      </div>
+      <div class="level-select" id="level-select"></div>
+    </header>
+
+    <main>
+      <section class="summary-panel" id="summary-panel"></section>
+
+      <section class="dashboard-grid">
+        <article class="hud-card" id="topics-card">
+          <header>
+            <h2>Topic Hangar</h2>
+            <p>Select a training module to launch a mission.</p>
+          </header>
+          <div id="topics-list" class="topics-list"></div>
+        </article>
+
+        <article class="hud-card priority-card">
+          <header>
+            <h2>Priority Words</h2>
+            <p>The words that need extra attention come first.</p>
+          </header>
+          <div id="priority-words" class="priority-words"></div>
+        </article>
+
+        <article class="hud-card" id="upload-card">
+          <header>
+            <h2>Intel Uplink</h2>
+            <p>Upload new vocab missions from scans or documents.</p>
+          </header>
+          <div class="upload-panel">
+            <label class="file-upload">
+              <input type="file" id="vocab-upload" accept="image/*,.pdf" />
+              <span>Drop files here or click to upload</span>
+            </label>
+            <div class="upload-status" id="upload-status"></div>
+            <div class="upload-results" id="upload-results"></div>
+          </div>
+        </article>
+
+        <article class="hud-card" id="history-card">
+          <header>
+            <h2>Recent Missions</h2>
+            <p>Track the latest sorties and performance.</p>
+          </header>
+          <div id="recent-history" class="recent-history"></div>
+        </article>
+      </section>
+    </main>
+
+    <div id="session-layer" class="session-layer hidden" aria-live="polite"></div>
+
+    <canvas id="celebration-canvas" class="celebration-canvas"></canvas>
+  </body>
+</html>
