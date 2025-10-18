@@ -16,16 +16,7 @@ export const TOPIC_DATA = [
       { english: "ten", spanish: "diez" },
       { english: "eleven", spanish: "once" },
       { english: "twelve", spanish: "doce" },
-      { english: "thirteen", spanish: "trece" },
-      { english: "fourteen", spanish: "catorce" },
-      { english: "fifteen", spanish: "quince" },
-      { english: "sixteen", spanish: "dieciséis" },
-      { english: "seventeen", spanish: "diecisiete" },
-      { english: "eighteen", spanish: "dieciocho" },
-      { english: "nineteen", spanish: "diecinueve" },
-      { english: "twenty", spanish: "veinte" },
-      { english: "twenty-one", spanish: "veintiuno" },
-      { english: "twenty-two", spanish: "veintidós" }
+      { english: "thirteen", spanish: "trece" }
     ]
   },
   {
@@ -118,17 +109,12 @@ export const TOPIC_DATA = [
     description: "Essential verbs and pronouns for every conversation.",
     words: [
       { english: "I", spanish: "yo" },
-      { english: "I am", spanish: "soy" },
       { english: "he / she / it", spanish: "él / ella" },
       { english: "we", spanish: "nosotros" },
       { english: "they", spanish: "ellos" },
       { english: "to be (ser)", spanish: "ser" },
-      { english: "they are", spanish: "son" },
       { english: "there is / there are", spanish: "hay" },
       { english: "to have", spanish: "tener" },
-      { english: "I have", spanish: "tengo" },
-      { english: "he / she has", spanish: "tiene" },
-      { english: "we have", spanish: "tenemos" },
       { english: "to go", spanish: "ir" },
       { english: "to play", spanish: "jugar" },
       { english: "to do", spanish: "hacer" },
@@ -136,77 +122,7 @@ export const TOPIC_DATA = [
       { english: "to read", spanish: "leer" },
       { english: "to write", spanish: "escribir" },
       { english: "to eat", spanish: "comer" },
-      { english: "to drink", spanish: "beber" },
-      { english: "my", spanish: "mi" },
-      { english: "my (plural)", spanish: "mis" },
-      { english: "your", spanish: "tu" },
-      { english: "our", spanish: "nuestro" },
-      { english: "to be called", spanish: "llamarse" },
-      { english: "is called", spanish: "se llama" },
-      { english: "we live", spanish: "vivimos" }
-    ]
-  },
-  {
-    id: "connectors",
-    title: "Palabras enlace",
-    description: "Glue sentences together smoothly.",
-    words: [
-      { english: "of / from", spanish: "de" },
-      { english: "in", spanish: "en" },
-      { english: "with", spanish: "con" },
-      { english: "years", spanish: "años" },
-      { english: "that", spanish: "que" }
-    ]
-  },
-  {
-    id: "family-core",
-    title: "La familia",
-    description: "Talk about family members and relationships.",
-    words: [
-      { english: "my family", spanish: "mi familia" },
-      { english: "my parents", spanish: "mis padres" },
-      { english: "my mother", spanish: "mi madre" },
-      { english: "my father", spanish: "mi padre" },
-      { english: "my brother", spanish: "mi hermano" },
-      { english: "my sister", spanish: "mi hermana" },
-      { english: "my stepbrother", spanish: "mi hermanastro" },
-      { english: "my stepsister", spanish: "mi hermanastra" },
-      { english: "my grandparents", spanish: "mis abuelos" },
-      { english: "my cousin (male)", spanish: "mi primo" },
-      { english: "my cousin (female)", spanish: "mi prima" }
-    ]
-  },
-  {
-    id: "family-descriptions",
-    title: "Descripción familiar",
-    description: "Describe how your family is.",
-    words: [
-      { english: "older", spanish: "mayor" },
-      { english: "younger", spanish: "menor" },
-      { english: "funny", spanish: "gracioso" },
-      { english: "hard-working", spanish: "trabajador" },
-      { english: "sporty", spanish: "deportista" },
-      { english: "kind", spanish: "amable" },
-      { english: "serious", spanish: "serio" },
-      { english: "talkative", spanish: "hablador" },
-      { english: "creative", spanish: "creativo" }
-    ]
-  },
-  {
-    id: "family-phrases",
-    title: "Frases clave",
-    description: "Combine vocab into full sentences and questions.",
-    words: [
-      { english: "How old are you?", spanish: "¿Cuántos años tienes?" },
-      { english: "When is your birthday?", spanish: "¿Cuándo es tu cumpleaños?" },
-      { english: "I have a 22 year old stepsister.", spanish: "Tengo una hermanastra de veintidós años." },
-      { english: "My brother is called Hugo and is 12 years old.", spanish: "Mi hermano se llama Hugo y tiene doce años." },
-      { english: "My birthday is in March.", spanish: "Mi cumpleaños es en marzo." },
-      { english: "We also have a friendly dog.", spanish: "También tenemos un perro simpático." },
-      { english: "My parents are very kind.", spanish: "Mis padres son muy amables." },
-      { english: "Do you have any pets?", spanish: "¿Tienes mascotas?" },
-      { english: "I am quite sporty.", spanish: "Soy bastante deportista." },
-      { english: "We live with our grandparents.", spanish: "Vivimos con mis abuelos." }
+      { english: "to drink", spanish: "beber" }
     ]
   }
 ];

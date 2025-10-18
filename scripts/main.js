@@ -22,7 +22,6 @@ import {
 } from "./utils.js";
 import { triggerCelebration } from "./celebration.js";
 import { playCelebrationTone, playErrorTone, speakSpanish } from "./audio.js";
-import { isSpeechSupported, listenForSpanish } from "./speech.js";
 
 const LEVELS = [
   { id: 1, label: "Level 1", tagline: "Acquire", description: "See the Spanish and hear it." },
@@ -333,7 +332,6 @@ function renderSessionCard() {
       ${bodyContent}
       <div class="feedback-message" id="session-feedback"></div>
       <div class="session-actions" id="session-actions"></div>
-      <div class="speech-eval" id="speech-eval"></div>
       <button class="session-close" aria-label="Close session">✕</button>
     </div>
   `;
@@ -499,8 +497,6 @@ function setupSessionActions(word) {
       }
     });
   }
-
-  setupSpeechTest(word);
 }
 
 function handleSessionResult(word, isCorrect, message, extras = {}) {
@@ -563,93 +559,6 @@ function handleSessionResult(word, isCorrect, message, extras = {}) {
   session.feedbackTimeout = setTimeout(() => {
     renderSessionCard();
   }, isCorrect ? 1200 : 900);
-}
-
-function setupSpeechTest(word) {
-  const speechContainer = elements.sessionLayer.querySelector("#speech-eval");
-  if (!speechContainer) return;
-
-  const resetState = () => {
-    speechContainer.classList.remove("speech-success", "speech-warning", "speech-error");
-  };
-
-  speechContainer.innerHTML = "";
-
-  if (!isSpeechSupported()) {
-    const status = document.createElement("p");
-    status.className = "speech-status muted";
-    status.textContent = "Speech recognition is not available on this device.";
-    speechContainer.appendChild(status);
-    return;
-  }
-
-  const button = document.createElement("button");
-  button.type = "button";
-  button.textContent = "🎙️ Pronunciation check";
-
-  const status = document.createElement("p");
-  status.className = "speech-status muted";
-  status.textContent = "Tap to compare your pronunciation.";
-
-  speechContainer.append(button, status);
-
-  button.addEventListener("click", async () => {
-    resetState();
-    button.disabled = true;
-    status.classList.remove("muted");
-    status.textContent = "Listening… say it in Spanish now.";
-    try {
-      const { transcripts } = await listenForSpanish();
-      if (!transcripts || !transcripts.length) {
-        speechContainer.classList.add("speech-warning");
-        status.textContent = "I couldn't hear that. Try again.";
-        return;
-      }
-
-      const scored = transcripts.map((entry) => ({
-        text: entry.transcript,
-        confidence: entry.confidence,
-        result: evaluateAnswer(word.spanish, entry.transcript)
-      }));
-
-      const perfect = scored.find((item) => item.result.correct);
-      if (perfect) {
-        speechContainer.classList.add("speech-success");
-        status.textContent = `Great pronunciation! I heard “${perfect.text}”.`;
-        return;
-      }
-
-      const almost = scored.find((item) => item.result.almost);
-      if (almost) {
-        speechContainer.classList.add("speech-warning");
-        status.textContent = `Almost! I heard “${almost.text}”. Check the sounds.`;
-        return;
-      }
-
-      const heard = scored[0]?.text;
-      speechContainer.classList.add("speech-error");
-      if (heard) {
-        status.textContent = `I heard “${heard}”. Let's try again for ${word.spanish}.`;
-      } else {
-        status.textContent = "Let's try that again—no match this time.";
-      }
-    } catch (error) {
-      speechContainer.classList.add("speech-error");
-      if (error.code === "not-allowed" || error.code === "service-not-allowed") {
-        status.textContent = "Allow microphone access to try the speaking test.";
-      } else if (error.code === "no-speech") {
-        status.textContent = "I didn't catch anything. Try again.";
-      } else if (error.code === "aborted") {
-        status.textContent = "Listening cancelled. Give it another go.";
-      } else if (error.message === "unsupported") {
-        status.textContent = "Speech recognition is not supported in this browser.";
-      } else {
-        status.textContent = "Something interrupted the speech test. Try again.";
-      }
-    } finally {
-      button.disabled = false;
-    }
-  });
 }
 
 function showModalMessage(title, message) {
