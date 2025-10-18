@@ -26,6 +26,7 @@ export const TOPIC_DATA = [
       { english: "twenty", spanish: "veinte" },
       { english: "twenty-one", spanish: "veintiuno" },
       { english: "twenty-two", spanish: "veintidós" }
+      { english: "thirteen", spanish: "trece" }
     ]
   },
   {
@@ -129,6 +130,8 @@ export const TOPIC_DATA = [
       { english: "I have", spanish: "tengo" },
       { english: "he / she has", spanish: "tiene" },
       { english: "we have", spanish: "tenemos" },
+      { english: "there is / there are", spanish: "hay" },
+      { english: "to have", spanish: "tener" },
       { english: "to go", spanish: "ir" },
       { english: "to play", spanish: "jugar" },
       { english: "to do", spanish: "hacer" },
@@ -207,6 +210,7 @@ export const TOPIC_DATA = [
       { english: "Do you have any pets?", spanish: "¿Tienes mascotas?" },
       { english: "I am quite sporty.", spanish: "Soy bastante deportista." },
       { english: "We live with our grandparents.", spanish: "Vivimos con mis abuelos." }
+      { english: "to drink", spanish: "beber" }
     ]
   }
 ];
