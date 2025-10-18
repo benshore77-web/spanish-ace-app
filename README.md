@@ -5,6 +5,7 @@ Spanish Ace is a futuristic heads-up-display style web app that helps Magnus (an
 ## Features
 
 - ✅ **Curriculum aligned topics** that match the supplied vocab sheet (ages & numbers, months, pets, descriptions, colours, high-frequency words, family sets, and full phrases).
+- ✅ **Curriculum aligned topics** that match the supplied vocab sheet (ages & numbers, months, pets, descriptions, colours, high-frequency words, and more).
 - ✅ **Three training levels**
   - *Level 1 – Acquire:* See and hear the Spanish straight away while deciding if it is locked in.
   - *Level 2 – Assemble:* Build the answer from scrambled Spanish letters.
@@ -39,3 +40,4 @@ This project is implemented with vanilla JavaScript, CSS, and HTML—no build st
 - Synth celebration/error tones are generated with the Web Audio API.
 
 Enjoy the mission! 🚀
+<!-- Updated: 18 Oct 2025 -->

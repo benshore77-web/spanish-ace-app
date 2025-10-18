@@ -363,6 +363,9 @@ function renderSessionCard() {
       <div class="feedback-message" id="session-feedback"></div>
       <div class="session-actions" id="session-actions"></div>
       <div class="speech-eval" id="speech-eval"></div>
+      ${bodyContent}
+      <div class="feedback-message" id="session-feedback"></div>
+      <div class="session-actions" id="session-actions"></div>
       <button class="session-close" aria-label="Close session">✕</button>
     </div>
   `;
@@ -404,6 +407,21 @@ function renderLevelTwo(word) {
         </div>
         <button class="button-danger" id="scramble-reset">Reset</button>
         ${mode === "phrase" ? '<p class="scramble-hint">Tap the words in order to rebuild the sentence.</p>' : ""}
+  const letters = shuffleArray(word.spanish.split(""));
+  return `
+    <div class="prompt">
+      <p class="prompt-text">${word.english}</p>
+      <div class="scramble-area" data-target="${word.spanish}">
+        <div class="scramble-output" id="scramble-output"></div>
+        <div class="scramble-letters">
+          ${letters
+            .map((letter, index) => {
+              const display = letter === " " ? "␣" : letter;
+              return `<button data-letter="${letter}" data-index="${index}">${display}</button>`;
+            })
+            .join("")}
+        </div>
+        <button class="button-danger" id="scramble-reset">Reset</button>
       </div>
     </div>
   `;
@@ -465,6 +483,13 @@ function setupSessionActions(word) {
           selection.push(unit === " " ? " " : unit);
           output.textContent = selection.join("");
         }
+
+    buttons.forEach((btn, index) => {
+      btn.addEventListener("click", () => {
+        if (used.has(index)) return;
+        used.add(index);
+        const letter = btn.dataset.letter === " " ? " " : btn.dataset.letter;
+        output.textContent += letter;
         btn.disabled = true;
       });
     });
@@ -491,6 +516,12 @@ function setupSessionActions(word) {
         return;
       }
       const result = evaluateAnswer(word.spanish, attempt);
+      const attempt = output.textContent.trim();
+      const result = evaluateAnswer(word.spanish, attempt);
+      if (!attempt) {
+        feedback.textContent = "Assemble the word first.";
+        return;
+      }
       handleSessionResult(word, result.correct, result.correct ? "Perfect!" : "Let's try that again.", {
         attempt,
         result
@@ -617,6 +648,10 @@ function setupSpeechTest(word) {
 
   const phraseMode = isPhrase(word);
 
+  const resetState = () => {
+    speechContainer.classList.remove("speech-success", "speech-warning", "speech-error");
+  };
+
   speechContainer.innerHTML = "";
 
   if (!isSpeechSupported()) {
@@ -681,6 +716,7 @@ function setupSpeechTest(word) {
   };
 
   speechContainer.append(button, status, transcriptsList);
+  speechContainer.append(button, status);
 
   button.addEventListener("click", async () => {
     resetState();
