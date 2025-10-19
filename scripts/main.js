@@ -404,24 +404,7 @@ function renderLevelTwo(word) {
                 `<button data-unit="${encodeURIComponent(item.value)}" data-key="${item.key}">${item.display}</button>`
             )
             .join("")}
-        </div>
-        <button class="button-danger" id="scramble-reset">Reset</button>
-        ${mode === "phrase" ? '<p class="scramble-hint">Tap the words in order to rebuild the sentence.</p>' : ""}
-  const letters = shuffleArray(word.spanish.split(""));
-  return `
-    <div class="prompt">
-      <p class="prompt-text">${word.english}</p>
-      <div class="scramble-area" data-target="${word.spanish}">
-        <div class="scramble-output" id="scramble-output"></div>
-        <div class="scramble-letters">
-          ${letters
-            .map((letter, index) => {
-              const display = letter === " " ? "␣" : letter;
-              return `<button data-letter="${letter}" data-index="${index}">${display}</button>`;
-            })
-            .join("")}
-        </div>
-        <button class="button-danger" id="scramble-reset">Reset</button>
+               <button class="button-danger" id="scramble-reset">Reset</button>
       </div>
     </div>
   `;
